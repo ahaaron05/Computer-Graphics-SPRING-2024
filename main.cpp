@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "ShaderClass.h"
+#include "stb_image.h"
 
 #include <iostream>
 
@@ -49,66 +50,119 @@ int main()
 	// Vertex Data & and configure Vertex Attributes
 	float vertices[] =
 	{
-		// positions		// colors
-		0.0f, 0.5f, 0.0f,	0.0f, 0.0f, 1.0f,  // top
-		0.5f, -0.5f, 0.0f,	1.0f, 0.0f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,  // bottom left
+		// positions		 // colors			// Texture Coords
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 
-	float texCoords[] =
+	unsigned int indices[] =
 	{
-		0.0f, 0.0f,  // lower-left corner
-		1.0f, 0.0f,	 // lower-right corner
-		0.0f, 1.0f,  // top-center corner
+		0, 1, 3,	// first triangle
+		1, 2, 3,	// second triangle
 	};
 
 	// Create Vertex Buffer Object and Vertex Array Object
-	unsigned int VBO, VAO;
+	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO); // the & symbol is used to get the address of the variable
-	
+	glGenBuffers(1, &EBO);
+
 	// Bind VAO first
 	glBindVertexArray(VAO);
 	
 	// Bind & Copy buffer(s) into GPU memory
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Configure Position Attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// Configure Color Attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	// Configure Texture Coordinate Attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
-	// TEXTURE
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
 
+
+	// TEXTURE 1
+	unsigned int texture1;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 	// Wrapping settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 	// Filtering settings
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Load Texture
+	int width, height, numChannels;
+	unsigned char* data = stbi_load("container.jpg", &width, &height, &numChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to Load Texture 1\n";
+	}
+	stbi_image_free(data);
 
+	// TEXTURE 2
+	unsigned int texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	// Wrapping settings
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	// Filtering settings
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// Load Texture
+	data = stbi_load("glass_texture.jpg", &width, &height, &numChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to Load Texture 2\n";
+	}
+	stbi_image_free(data);
+
+	myShader.use();
+	myShader.setInt("texture1", 0);
+	myShader.setInt("texture2", 1);
 
 	// UPDATE LOOP
 	while (!glfwWindowShouldClose(window))
 	{
-		// input
+		// Input
+		// --------
 		processInput(window);
 
-		// rendering
+		// Render
+		// --------
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Sets current color state to black
 		glClear(GL_COLOR_BUFFER_BIT); // Uses current color state to make the screen blue
 
-		// render the triangle
-		myShader.use();
+		// Bind Textures
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+
 		glBindVertexArray(VAO);
-		myShader.setFloat("xOffset", -0.5f);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 		
 		// SWAP BUFFERS & EVENTS
@@ -121,6 +175,7 @@ int main()
 	// TERMINATE AND DEINITIALIZE
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 	return 0;
