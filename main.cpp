@@ -15,6 +15,8 @@ const int scrHeight = 600;
 
 int main()
 {
+	std::cout << "Hello User!\n";
+
 	// INITIALIZATION
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // using version 3
