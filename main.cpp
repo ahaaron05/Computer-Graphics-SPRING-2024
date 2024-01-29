@@ -96,6 +96,14 @@ int main()
 		6, 1, 5,
 	};
 
+	glm::vec3 cubePositions[] =
+	{
+		glm::vec3(0.0f, 0.0f, -4.0f),
+		glm::vec3(-7.0f, 0.0f, -3.0f),
+		glm::vec3(8.0f, 1.0f, -4.0f),
+	};
+
+
 	// Create Vertex Buffer Object and Vertex Array Object
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
@@ -220,14 +228,19 @@ int main()
 
 		glBindVertexArray(VAO);
 		// RENDER 
+		for (int i = 0; i < 3; i++)
+		{
+
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, -4.0f));
-			model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::translate(model, cubePositions[i]);
+			float angle = glfwGetTime() * 10.0f;
+			
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
 			myShader.setMat4("model", model);
 
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		}
 
-	
 		// SWAP BUFFERS & EVENTS
 		glfwSwapBuffers(window); // swaps the front buffer with the loaded and ready back buffer
 		glfwPollEvents();

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Computer Graphics", "Computer Graphics.vcxproj", "{7EB705D0-B225-4120-B3D2-795E8E1513A1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LearningDaLanguage", "..\LearningDaLanguage\LearningDaLanguage.vcxproj", "{15908757-3D2C-4233-831D-C0D945BDD08D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{7EB705D0-B225-4120-B3D2-795E8E1513A1}.Release|x64.Build.0 = Release|x64
 		{7EB705D0-B225-4120-B3D2-795E8E1513A1}.Release|x86.ActiveCfg = Release|Win32
 		{7EB705D0-B225-4120-B3D2-795E8E1513A1}.Release|x86.Build.0 = Release|Win32
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Debug|x64.ActiveCfg = Debug|x64
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Debug|x64.Build.0 = Debug|x64
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Debug|x86.ActiveCfg = Debug|Win32
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Debug|x86.Build.0 = Debug|Win32
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Release|x64.ActiveCfg = Release|x64
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Release|x64.Build.0 = Release|x64
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Release|x86.ActiveCfg = Release|Win32
+		{15908757-3D2C-4233-831D-C0D945BDD08D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
