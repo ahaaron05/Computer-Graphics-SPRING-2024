@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ShaderClass.h"
+#include "Shader.h"
 #include "stb_image.h"
 
 #include <iostream>
@@ -188,8 +188,12 @@ int main()
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), float(scrWidth) / float(scrHeight), 0.1f, 100.0f);
 	myShader.setMat4("projection", projection);
 
-	
+	float yaw = -90.0f;
 
+	///////////////////////////////////////
+	/////////////////////////////////
+	//////////////////////////////
+	//////////////////////////
 	// UPDATE LOOP
 	while (!glfwWindowShouldClose(window))
 	{
@@ -221,7 +225,11 @@ int main()
 		// Camera/view Transformations
 		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, direction, and up vector
 		myShader.setMat4("view", view);
-		
+		float pitch;
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
+		direction.y = sin(glm::radians(pitch));
+		direction.z = sin(glm::radians(yaw) * sin(glm::radians(pitch)));
 		
 		myShader.setMat4("view", view);
 
@@ -264,6 +272,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
+
+///////////////////////////////////////
+/////////////////////////////////
+//////////////////////////////
+//////////////////////////
 // INPUT PROCESSES
 void processInput(GLFWwindow* window)
 {
