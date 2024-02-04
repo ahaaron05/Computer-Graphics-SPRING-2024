@@ -5,21 +5,26 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.h"
+#include "Camera.h"
 #include "stb_image.h"
 
 #include <iostream>
 
+// FUNCTIONS
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouseCallback(GLFWwindow* window, double xPosIn, double yPosIn);
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 void processInput(GLFWwindow* window);
 
 // SETTINGS 
-const int scrWidth = 800;
-const int scrHeight = 600;
+const unsigned int scrWidth = 800;
+const unsigned int scrHeight = 600;
 
 // Camera
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 9.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0, 1.0f, 0.0f);
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = scrWidth / 2.0f;
+float lastY = scrHeight / 2.0f;
+bool firstMouse = true;
 
 // timing
 float deltaTime = 0.0f; // time it took to render the last frame
@@ -45,6 +50,10 @@ int main()
 	}
 	glfwMakeContextCurrent(window); // Make window current context
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); // Call the function on every window resize
+	glfwSetCursorPosCallback(window, mouseCallback);
+	glfwSetScrollCallback(window, scrollCallback);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // disable cursor when focused in application screen
 
 	// LOAD GLAD
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -185,10 +194,9 @@ int main()
 	myShader.setInt("texture1", 0);
 	myShader.setInt("texture2", 1);
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), float(scrWidth) / float(scrHeight), 0.1f, 100.0f);
-	myShader.setMat4("projection", projection);
+	glfwSetCursorPos(window, lastX, lastY);
 
-	float yaw = -90.0f;
+
 
 	///////////////////////////////////////
 	/////////////////////////////////
@@ -221,21 +229,18 @@ int main()
 		// Activate shaders
 		myShader.use();
 
+		// pass projection matrix to shader
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), float(scrWidth) / float(scrHeight), 0.1f, 100.0f);
+		myShader.setMat4("projection", projection);
 
 		// Camera/view Transformations
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // camera position, direction, and up vector
+		glm::mat4 view = camera.getViewMatrix();
 		myShader.setMat4("view", view);
-		float pitch;
-		glm::vec3 direction;
-		direction.x = cos(glm::radians(yaw) * cos(glm::radians(pitch)));
-		direction.y = sin(glm::radians(pitch));
-		direction.z = sin(glm::radians(yaw) * sin(glm::radians(pitch)));
 		
-		myShader.setMat4("view", view);
 
 
-		glBindVertexArray(VAO);
 		// RENDER 
+		glBindVertexArray(VAO);
 		for (int i = 0; i < 3; i++)
 		{
 
@@ -280,8 +285,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // INPUT PROCESSES
 void processInput(GLFWwindow* window)
 {
-	float cameraSpeed = static_cast<float>(2.5f * deltaTime);
-
 	// if the user presses ESC, the window closes
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
@@ -300,18 +303,46 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		cameraPos += cameraSpeed * cameraFront;
+		camera.processKeyboard(FORWARD, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		cameraPos -= cameraSpeed * cameraFront;
+		camera.processKeyboard(BACKWARD, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.processKeyboard(LEFT, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.processKeyboard(RIGHT, deltaTime);
 	}
+}
+
+void mouseCallback(GLFWwindow* window, double xposIn, double yposIn)
+{
+	float xpos = static_cast<float>(xposIn);
+	float ypos = static_cast<float>(yposIn);
+
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	camera.processMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.processMouseScroll(static_cast<float>(yoffset));
 }
