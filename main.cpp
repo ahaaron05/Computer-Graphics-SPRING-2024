@@ -1,3 +1,9 @@
+//********************************************************************************
+// *2024*
+// This program is a 3D Graphics Renderer made by Aaron W. Ludwig
+// using, C++ and OpenGL
+//********************************************************************************
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h> 
 #include <glm/glm.hpp>
