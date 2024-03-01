@@ -18,13 +18,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="new.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,10 +43,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shader.frag">
+    <None Include="shader1.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
