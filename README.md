@@ -10,4 +10,5 @@ My manual on how I came to making this: https://docs.google.com/document/d/1zrxN
 2) Locate the newly cloned local rep directory on your computer
 3) In visual studio, open this directory folder
 4) In the project, double click the .sln file
-5) That's all! Make changes and commit!
+5) Link the include and lib directories appropriately
+6) That's all! Make changes and commit!
