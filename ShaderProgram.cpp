@@ -76,17 +76,21 @@ void ShaderProgram::Use()
 	glUseProgram(ID);
 }
 
-void ShaderProgram::setBool(const string& name, bool value)
+void ShaderProgram::SetBool(const string& name, bool value)
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void ShaderProgram::setInt(const string& name, int value)
+void ShaderProgram::SetInt(const string& name, int value)
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void ShaderProgram::setFloat(const string& name, float value)
+void ShaderProgram::SetFloat(const string& name, float value)
 {
 	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+void ShaderProgram::SetMat4(const string& name, const glm::mat4 &mat)
+{
+	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }

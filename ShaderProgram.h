@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <glm/glm.hpp>
 using namespace std;
 
 
@@ -16,9 +17,10 @@ public:
 	void Use();
 
 	//! UNIFORM FUNCTIONS
-	void setBool(const string &name, bool value);
-	void setInt(const string &name, int value);
-	void setFloat(const string &name, float value);
+	void SetBool(const string &name, bool value);
+	void SetInt(const string &name, int value);
+	void SetFloat(const string &name, float value);
+	void SetMat4(const string& name, const glm::mat4 &mat);
 private:
 	unsigned int ID;
 };

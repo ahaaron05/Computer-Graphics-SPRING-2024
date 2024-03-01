@@ -7,6 +7,9 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "ShaderProgram.h"
 using namespace std;
@@ -88,6 +91,17 @@ int main()
 		
 		myShaderProgram.Use();
 		glBindVertexArray(VAO);
+
+		glm::mat4 transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, glm::vec3(0.3f, 0.0f, 0.0f));
+		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, 0.0f));
+		myShaderProgram.SetMat4("transform", transform);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, glm::vec3(-0.3f, 0.5f, 0.0f));
+		transform = glm::scale(transform, glm::vec3((float)cos(glfwGetTime()), (float)cos(glfwGetTime()), (float)cos(glfwGetTime())));
+		myShaderProgram.SetMat4("transform", transform);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		
 		glfwSwapBuffers(window);
