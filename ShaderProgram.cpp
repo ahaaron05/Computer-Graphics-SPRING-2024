@@ -71,22 +71,22 @@ ShaderProgram::ShaderProgram(const char* vertPath, const char* fragPath)
 	glDeleteShader(fragmentShader);
 }
 
-void Shader::Use()
+void ShaderProgram::Use()
 {
 	glUseProgram(ID);
 }
 
-void Shader::setBool(const string& name, bool value)
+void ShaderProgram::setBool(const string& name, bool value)
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::setInt(const string& name, int value)
+void ShaderProgram::setInt(const string& name, int value)
 {
 	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::setFloat(const string& name, float value)
+void ShaderProgram::setFloat(const string& name, float value)
 {
 	glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
