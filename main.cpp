@@ -56,38 +56,15 @@ int main()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//! SHADER PROGRAM
-	ShaderProgram myShaderProgram("shader.vert", "shader.frag");
+	ShaderProgram objectProgram("object.vert", "object.frag");
+	ShaderProgram lightProgram("light.vert", "light.frag");
 	
 	//! PROJECTION
-	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, -10.0f, -50.0f));
-	glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 300.0f);
-
-	//! TEXTURE
-	unsigned int crateTexture;
-	glGenTextures(1, &crateTexture);
-	glBindTexture(GL_TEXTURE_2D, crateTexture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, numChannels;
-	unsigned char* textureData = stbi_load("container.jpg", &width, &height, &numChannels, 0);
-
-	if (textureData)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		cout << "FAILED TO LOAD TEXTURE\n";
-	}
-	stbi_image_free(textureData);
 
 	//! MODEL
-	Model backpackModel("an_animated_cat.glb");
+	Model objectModel("sampleCube.obj");
+	Model lightModel("SampleCube.obj");
+	
 
 
 	/////////////////////
@@ -101,18 +78,41 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		myShaderProgram.Use();
+		glm::vec3 lightPos = glm::vec3(-2.0f, 2.0f, 2.0f);
+
+		objectProgram.Use();
+		objectProgram.SetVec3("objColor", glm::vec3(0.8, 0.459, 0.675));
+		objectProgram.SetVec3("lightColor", glm::vec3(1));
+		objectProgram.SetVec3("lightPos", lightPos);
+
+		glm::mat4 view = glm::mat4(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, -0.95f, -6.0f));
+		view = glm::rotate(view, (float)glfwGetTime(), glm::vec3(0, 1, 0));
+		glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 150.0f);
 		
-
-		myShaderProgram.SetMat4("view", view);
-		myShaderProgram.SetMat4("projection", projection);
-
+		
+		// DRAW OBJECT
+		objectProgram.SetMat4("projection", projection);
+		objectProgram.SetMat4("view", view);
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, (float)(glfwGetTime() * 2), glm::vec3(0.0f, 1.0f, 0.0f));
-		myShaderProgram.SetMat4("model", model);
+		model = glm::translate(model, glm::vec3(0, 0, 0));
+		model = glm::scale(model, glm::vec3(1, 1, 1));
+		objectProgram.SetMat4("model", model);
+		objectModel.Draw(objectProgram);
 		
-		backpackModel.Draw(myShaderProgram);
 		
+		// DRAW LIGHT
+		lightProgram.Use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0, 1, 0));
+		model = glm::scale(model, glm::vec3(0.2f));
+		lightProgram.SetMat4("projection", projection);
+		lightProgram.SetMat4("view", view);
+		lightProgram.SetMat4("model", model);
+		lightModel.Draw(lightProgram);
+		
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
