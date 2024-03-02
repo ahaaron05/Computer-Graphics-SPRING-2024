@@ -59,7 +59,7 @@ int main()
 	
 	//! PROJECTION
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, -20.0f, -50.0f));
+	view = glm::translate(view, glm::vec3(0.0f, -10.0f, -50.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 300.0f);
 
 	// VERTEX & INDICES
@@ -83,7 +83,7 @@ int main()
 		myShaderProgram.SetMat4("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, (float)(glfwGetTime() * 2), glm::vec3(0.0f, 1.0f, 0.0f));
 		myShaderProgram.SetMat4("model", model);
 		
 		backpackModel.Draw(myShaderProgram);
