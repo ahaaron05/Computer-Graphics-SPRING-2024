@@ -1,4 +1,4 @@
-**Computer Graphics-SPRING 2024**
+**Dark Radian Graphics Renderer**
 By Aaron Ludwig
 
 Based off of learnopengl.com 
