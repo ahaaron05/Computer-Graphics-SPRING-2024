@@ -22,54 +22,6 @@ void ProcessInput(GLFWwindow* window);
 const unsigned int SCREEN_WIDTH  =  1000;
 const unsigned int SCREEN_HEIGHT =  800;
 
-/*
-const float vertices[] =
-{
-	// Positions			// Colors
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,	1.0f, 0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 1.0f, 
-	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 0.0f, 
-	-0.5f,  0.5f,  0.5f,	0.0f, 1.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.5f,
-
-	-0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.5f,
-	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f, 
-	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.3f,
-	-0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.8f,
-
-	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.2f,
-	 0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.4f,
-	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.7f,
-
-	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
-
-	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.5f,
-	-0.5f,  0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 0.9f,
-};
-*/
-
 
 /////////////////////
 ///////////////////
@@ -107,11 +59,11 @@ int main()
 	
 	//! PROJECTION
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, -140.0f, -250.0f));
+	view = glm::translate(view, glm::vec3(0.0f, -20.0f, -50.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 300.0f);
 
 	// VERTEX & INDICES
-	Model backpackModel("Dwarf Idle.fbx");
+	Model backpackModel("an_animated_cat.glb");
 
 	/////////////////////
 	///////////////////
