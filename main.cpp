@@ -12,21 +12,63 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ShaderProgram.h"
+#include "Mesh.h"
+#include "Model.h"
 using namespace std;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void ProcessInput(GLFWwindow* window);
 
 const unsigned int SCREEN_WIDTH  =  1000;
 const unsigned int SCREEN_HEIGHT =  800;
 
+/*
 const float vertices[] =
 {
 	// Positions			// Colors
-	0.0f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,
-	0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,
-};
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,	1.0f, 0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f, 0.0f,
 
+	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 1.0f, 
+	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,	1.0f, 1.0f, 0.0f, 
+	-0.5f,  0.5f,  0.5f,	0.0f, 1.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.5f,
+
+	-0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.5f,
+	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f, 
+	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.3f,
+	-0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.8f,
+
+	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.2f,
+	 0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 0.4f,
+	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.7f,
+
+	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,	1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,	0.0f, 1.0f, 0.0f,
+
+	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,	1.0f, 1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,	1.0f, 0.0f, 0.5f,
+	-0.5f,  0.5f,  0.5f,	0.0f, 0.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,	0.0f, 1.0f, 0.9f,
+};
+*/
 
 
 /////////////////////
@@ -57,26 +99,19 @@ int main()
 		cout << "FAILED TO INIT GLAD!\n";
 		return -1;
 	}
-
-
-	//! VBO
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//! VAO
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	//! SHADER PROGRAM
 	ShaderProgram myShaderProgram("shader.vert", "shader.frag");
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	
+	//! PROJECTION
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, -140.0f, -250.0f));
+	glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 300.0f);
 
+	// VERTEX & INDICES
+	Model backpackModel("Dwarf Idle.fbx");
 
 	/////////////////////
 	///////////////////
@@ -84,31 +119,27 @@ int main()
 	//! LOOP
 	while (!glfwWindowShouldClose(window))
 	{
-		glfwPollEvents();
+		ProcessInput(window);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		myShaderProgram.Use();
-		glBindVertexArray(VAO);
+		
 
-		glm::mat4 transform = glm::mat4(1.0f);
-		transform = glm::translate(transform, glm::vec3(0.3f, 0.0f, 0.0f));
-		transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(1.0f, 1.0f, 0.0f));
-		myShaderProgram.SetMat4("transform", transform);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		myShaderProgram.SetMat4("view", view);
+		myShaderProgram.SetMat4("projection", projection);
 
-		transform = glm::mat4(1.0f);
-		transform = glm::translate(transform, glm::vec3(-0.3f, 0.5f, 0.0f));
-		transform = glm::scale(transform, glm::vec3((float)cos(glfwGetTime()), (float)cos(glfwGetTime()), (float)cos(glfwGetTime())));
-		myShaderProgram.SetMat4("transform", transform);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+		myShaderProgram.SetMat4("model", model);
+		
+		backpackModel.Draw(myShaderProgram);
 		
 		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
-	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
 	glfwTerminate();
 	return 0;
 }
@@ -117,4 +148,16 @@ int main()
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+void ProcessInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }
