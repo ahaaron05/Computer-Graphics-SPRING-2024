@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ShaderProgram.h"
+#include "stb_image.h"
 #include "Mesh.h"
 #include "Model.h"
 using namespace std;
@@ -62,8 +63,32 @@ int main()
 	view = glm::translate(view, glm::vec3(0.0f, -10.0f, -50.0f));
 	glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 300.0f);
 
-	// VERTEX & INDICES
+	//! TEXTURE
+	unsigned int crateTexture;
+	glGenTextures(1, &crateTexture);
+	glBindTexture(GL_TEXTURE_2D, crateTexture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, numChannels;
+	unsigned char* textureData = stbi_load("container.jpg", &width, &height, &numChannels, 0);
+
+	if (textureData)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		cout << "FAILED TO LOAD TEXTURE\n";
+	}
+	stbi_image_free(textureData);
+
+	//! MODEL
 	Model backpackModel("an_animated_cat.glb");
+
 
 	/////////////////////
 	///////////////////

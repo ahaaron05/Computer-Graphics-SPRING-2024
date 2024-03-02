@@ -45,19 +45,20 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 {
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
+	vector<Texture> textures;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
-		glm::vec3 vectorPos, vectorColor;
+		glm::vec3 vectorPos, vectorNormal;
 		vectorPos.x = mesh->mVertices[i].x;
 		vectorPos.y = mesh->mVertices[i].y;
 		vectorPos.z = mesh->mVertices[i].z;
-		vectorColor.x = mesh->mNormals[i].x;
-		vectorColor.y = mesh->mNormals[i].y;
-		vectorColor.z = mesh->mNormals[i].z;
+		vectorNormal.x = mesh->mNormals[i].x;
+		vectorNormal.y = mesh->mNormals[i].y;
+		vectorNormal.z = mesh->mNormals[i].z;
 		vertex.position = vectorPos;
-		vertex.color = vectorColor;
+		vertex.normal = vectorNormal;
 
 		vertices.push_back(vertex);
 	}
@@ -70,5 +71,5 @@ Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[y]);
 		}
 	}
-	return Mesh(vertices, indices);
+	return Mesh(vertices, indices, textures);
 }
