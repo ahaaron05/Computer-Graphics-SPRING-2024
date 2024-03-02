@@ -62,7 +62,7 @@ int main()
 	//! PROJECTION
 
 	//! MODEL
-	Model objectModel("sampleCube.obj");
+	Model objectModel("an_animated_cat.glb");
 	Model lightModel("SampleCube.obj");
 	
 
@@ -96,7 +96,7 @@ int main()
 		objectProgram.SetMat4("view", view);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0, 0, 0));
-		model = glm::scale(model, glm::vec3(1, 1, 1));
+		model = glm::scale(model, glm::vec3(.1, .1, .1));
 		objectProgram.SetMat4("model", model);
 		objectModel.Draw(objectProgram);
 		
@@ -105,7 +105,7 @@ int main()
 		lightProgram.Use();
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, lightPos);
-		model = glm::rotate(model, glm::radians(50.0f), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0, 1, 0));
 		model = glm::scale(model, glm::vec3(0.2f));
 		lightProgram.SetMat4("projection", projection);
 		lightProgram.SetMat4("view", view);
