@@ -6,6 +6,10 @@ My manual on how I came to making this: https://docs.google.com/document/d/1zrxN
 
 ![Screenshot 2024-03-01 1920421](https://github.com/ahaaron05/Computer-Graphics-SPRING-2024/assets/107589333/58ff2966-dc72-4146-b651-675d397359d9)
 
+My Twitch Stream where I made this LIVE
+
+https://www.twitch.tv/slayasloth
+
 **HOW TO USE**
 
 1) Clone the repo using GitHub Desktop
