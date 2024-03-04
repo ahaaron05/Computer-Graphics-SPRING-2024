@@ -21,21 +21,24 @@ using namespace std;
 void FrameBufferSizeCallBack(GLFWwindow* window, int width, int height);
 void ProcessInput(GLFWwindow* window);
 void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+void ScrollCallBack(GLFWwindow* window, double xOffset, double yOffset);
 
 const unsigned int SCREEN_WIDTH  =  1000;
 const unsigned int SCREEN_HEIGHT =  800;
 
+//! FRAME CONTROL
 float lastFrame = 0;
 float deltaTime = 0;
-float deltaHit = 0;
 
 
 //! CAMERA
+const float sensitivity = 0.08f;
+float fov = 80.0f;
+float scrollSpeed = 2;
 glm::vec3 camPos(0, 0, 1);
 glm::vec3 camUp(0, 1, 0);
 glm::vec3 camFront(0, 0, -1);
 bool firstMouse = true;
-const float sensitivity = 0.08f;
 float lastX = SCREEN_WIDTH / 2;
 float lastY = SCREEN_HEIGHT / 2;
 float yaw = -90.0f;
@@ -67,6 +70,7 @@ int main()
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetFramebufferSizeCallback(window, FrameBufferSizeCallBack);
 	glfwSetCursorPosCallback(window, MouseCallback);
+	glfwSetScrollCallback(window, ScrollCallBack);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -93,11 +97,10 @@ int main()
 	{
 		float currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
-		deltaHit += deltaTime;
 		lastFrame = currentFrame;
 		ProcessInput(window);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, 1);
@@ -111,7 +114,7 @@ int main()
 		glm::mat4 view = glm::lookAt(camPos, camPos + camFront, camUp);
 		view = glm::translate(view, glm::vec3(0.0f, -0.95f, -6.0f));
 		view = glm::rotate(view, (float)glfwGetTime(), glm::vec3(0, 1, 0));
-		glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 150.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(fov), (float)(SCREEN_WIDTH / SCREEN_HEIGHT), 0.1f, 150.0f);
 
 
 		// DRAW OBJECT
@@ -162,6 +165,8 @@ void ProcessInput(GLFWwindow* window)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
 		camPos += camFront * camSpeed;
@@ -214,4 +219,17 @@ void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 	camDirection.y = sin(glm::radians(pitch));
 	camDirection.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	camFront = glm::normalize(camDirection);
+}
+
+void ScrollCallBack(GLFWwindow* window, double xOffset, double yOffset)
+{
+	fov -= (float)yOffset * scrollSpeed;
+	if (fov >= 80.0f)
+	{
+		fov = 80.0f;
+	}
+	else if (fov <= 1.0f)
+	{
+		fov = 1.0f;
+	}
 }
